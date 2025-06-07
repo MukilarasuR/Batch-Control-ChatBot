@@ -1,0 +1,37 @@
+Batch-control-ChatBot/
+│
+├── app/
+│   ├── __init__.py
+│   ├── main.py                   # FastAPI app entry point
+│   ├── config.py                 # Configurations (DB URL, API keys, etc.)
+│   ├── database.py               # DB connection & session management
+│   ├── models/                   # SQLAlchemy models (ORM classes)
+│   │   ├── __init__.py
+│   │   ├── common.py             # Departments, Employees tables
+│   │   └── batch_control.py      # Products, Batches, Batch_Tracking tables
+│   ├── schemas/                  # Pydantic models (request/response validation)
+│   │   ├── __init__.py
+│   │   └── batch_control.py
+│   ├── crud/                     # DB operations: create, read, update, delete
+│   │   ├── __init__.py
+│   │   └── batch_control.py
+│   ├── api/                      # API route handlers
+│   │   ├── __init__.py
+│   │   └── batch_control.py      # Endpoints for chatbot batch queries
+│   ├── services/                 # Business logic (LangChain, Gemini integration, NLU, caching)
+│   │   ├── __init__.py
+│   │   ├── nlu.py                # Intent Recognition & Entity Extraction
+│   │   ├── rag_pipeline.py       # RAG with LangChain + Gemini
+│   │   └── cache.py              # Redis caching wrapper (optional)
+│   └── websocket/                # Real-time communication (optional)
+│       ├── __init__.py
+│       └── socket_manager.py
+│
+├── tests/                       # Unit & integration tests
+│   ├── test_api.py
+│   ├── test_crud.py
+│   └── test_services.py
+│
+├── requirements.txt             # Python dependencies
+├── README.md                    # Project overview & setup instructions
+└── .env                        # Environment variables (DB credentials, API keys)

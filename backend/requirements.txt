@@ -1,0 +1,53 @@
+# Core Web Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Database & ORM
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+alembic==1.12.1  # For database migrations
+
+# AI & NLP Components
+langchain==0.0.350
+langchain-google-genai==0.0.6
+google-generativeai==0.3.2
+faiss-cpu==1.7.4
+sentence-transformers==2.2.2  # For creating embeddings
+
+# Vector Database Alternative (if FAISS doesn't work)
+chromadb==0.4.18
+
+# Caching
+redis==5.0.1
+
+# Real-time Communication
+python-socketio==5.10.0
+python-multipart==0.0.6  # For handling form data
+
+# Environment & Configuration
+python-dotenv==1.0.0  # For managing environment variables
+pydantic==2.5.0  # Data validation (comes with FastAPI but good to specify)
+pydantic-settings==2.1.0  # For settings management
+
+# HTTP Requests & API calls
+httpx==0.25.2  # For making HTTP requests
+requests==2.31.0  # Alternative HTTP library
+
+# Data Processing & Utilities
+pandas==2.1.4  # For data manipulation if needed
+numpy==1.24.4  # Mathematical operations
+python-json-logger==2.0.7  # Better logging
+
+# Authentication & Security (if needed later)
+python-jose[cryptography]==3.3.0  # JWT handling
+passlib[bcrypt]==1.7.4  # Password hashing
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+httpx==0.25.2  # For testing async endpoints
+
+# Development & Code Quality
+black==23.11.0  # Code formatting
+flake8==6.1.0  # Code linting
+pre-commit==3.6.0  # Git hooks for code quality
