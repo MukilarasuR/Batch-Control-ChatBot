@@ -1,0 +1,40 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+chatbot_env/
+venv/
+env/
+.env
+
+# ===== IDE / Editor =====
+.idea/
+.vscode/
+*.iml
+
+# macOS / Linux hidden files
+.DS_Store
+.env
+
+# ===== Node / Frontend =====
+Chatbot-UI/node_modules/
+Chatbot-UI/dist/
+Chatbot-UI/.vite/
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# Coverage / py-test
+.pytest_cache/
+coverage/
+
+# Others you might want to ignore
+*.pyc
+*.pyo
