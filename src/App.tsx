@@ -11,36 +11,20 @@ type Message = {
 
 const ChatInterface = () => {
   const [messages, setMessages] = useState<Message[]>([]);
-
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-
-  const fetchMessages = async () => {
-    const response = await fetch('http://localhost:8000/chat');
-    const data = await response.json();
-    console.log("fetched messages: ", data);
-    setMessages([
-      {
-        id: '1',
-        role: 'assistant',
-        content: 'Hello! How can I help you today?',
-        timestamp: new Date()
-      }
-      , ...data
-    ]);
-  }
 
   const handleSend = async () => {
     if (!inputValue.trim()) return;
 
     const userMessage: Message = {
       id: `${Date.now()}`,
-      role: "user",
+      role: 'user',
       content: inputValue,
       timestamp: new Date()
     };
@@ -52,28 +36,27 @@ const ChatInterface = () => {
     try {
       const response = await fetch('http://localhost:8000/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ query: inputValue })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: inputValue }) // 🔁 key must match FastAPI model
       });
 
       const data = await response.json();
       const botMessage: Message = {
         id: `${Date.now()}`,
         role: 'assistant',
-        content: data,
+        content: data.response, // 🔁 must use response field
         timestamp: new Date()
       };
+
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
-      console.log("failed to get response: ", error);
+      console.error('Chatbot error:', error);
       setMessages(prev => [
         ...prev,
         {
           id: `${Date.now()}`,
           role: 'assistant',
-          content: 'I am sorry, I could not process your request. Please try again.',
+          content: '⚠️ Failed to process your request. Try again.',
           timestamp: new Date()
         }
       ]);
@@ -93,14 +76,8 @@ const ChatInterface = () => {
     scrollToBottom();
   }, [messages]);
 
-  useEffect(() => {
-    fetchMessages();
-  }, []);
-
   return (
-    <div className='container'>
-
-      {/* Header */}
+    <div className="container">
       <div className="chat-header">
         <div className="chat-header-content">
           <div className="chat-header-avatar">
@@ -113,12 +90,9 @@ const ChatInterface = () => {
         </div>
       </div>
 
-      {/* Messages Container */}
       <div className="chat-messages-container">
         <div className="chat-messages-wrapper">
           {messages.map(renderMessage)}
-
-          {/* Typing Indicator */}
           {isTyping && (
             <div className="typing-container">
               <div className="typing-wrapper">
@@ -127,9 +101,9 @@ const ChatInterface = () => {
                 </div>
                 <div className="typing-bubble">
                   <div className="typing-dots">
-                    <div className="typing-dot typing-dot-1"></div>
-                    <div className="typing-dot typing-dot-2"></div>
-                    <div className="typing-dot"></div>
+                    <div className="typing-dot typing-dot-1" />
+                    <div className="typing-dot typing-dot-2" />
+                    <div className="typing-dot" />
                   </div>
                 </div>
               </div>
@@ -139,7 +113,6 @@ const ChatInterface = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Area */}
       <div className="chat-input-area">
         <div className="chat-input-container">
           <textarea
@@ -163,7 +136,7 @@ const ChatInterface = () => {
   );
 };
 
-const renderMessage = (message: Message, index: number) => {
+const renderMessage = (message: Message) => {
   if (message.role === 'user' && typeof message.content === 'string') {
     return (
       <div key={message.id} className="user-message-container">
@@ -178,6 +151,9 @@ const renderMessage = (message: Message, index: number) => {
       </div>
     );
   } else {
+    const content = message.content;
+    const isTable = typeof content === 'string' && content.includes('|') && content.includes('\n');
+
     return (
       <div key={message.id} className="bot-message-container">
         <div className="bot-message-wrapper">
@@ -185,18 +161,41 @@ const renderMessage = (message: Message, index: number) => {
             <Bot size={16} color="white" />
           </div>
           <div className="bot-message-bubble">
-            {typeof message.content === 'object' ? (
-              <pre className="json-content">
-                {JSON.stringify(message.content, null, 2)}
-              </pre>
-            ) : (
-              <p className="message-text">{message.content}</p>
+            {isTable ? renderTableFromText(content as string) : (
+              <p className="message-text">{String(content)}</p>
             )}
           </div>
         </div>
       </div>
     );
   }
+};
+
+const renderTableFromText = (text: string) => {
+  const lines = text.trim().split('\n').filter(line => line.includes('|'));
+  if (lines.length < 2) {
+    return <p className="message-text">{text}</p>;
+  }
+
+  const headers = lines[0].split('|').map(cell => cell.trim());
+  const rows = lines.slice(1).map(row => row.split('|').map(cell => cell.trim()));
+
+  return (
+    <table className="bot-table">
+      <thead>
+        <tr>
+          {headers.map((head, i) => <th key={i}>{head}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row, i) => (
+          <tr key={i}>
+            {row.map((cell, j) => <td key={j}>{cell}</td>)}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 };
 
 export default ChatInterface;

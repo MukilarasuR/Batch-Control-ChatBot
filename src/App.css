@@ -96,6 +96,30 @@
   flex-shrink: 0;
 }
 
+/* ✅ Bot Table Styling */
+.bot-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.bot-table th,
+.bot-table td {
+  border: 1px solid #cbd5e1;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.bot-table th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+}
+
+.bot-table tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
 /* Bot Message Styles */
 .bot-message-container {
   display: flex;
